@@ -1,0 +1,19 @@
+{
+  "pets": [
+    {
+      "id": 1,
+      "imageUrl": "http://placekitten.com/320/180",
+      "name": "Milo"
+    },
+    {
+      "id": 2,
+      "imageUrl": "http://placedog.net/320/180",
+      "name": "Oscar"
+    },
+    {
+      "id": 3,
+      "imageUrl": "http://placekitten.com/g/320/180",
+      "name": "Arthur"
+    }
+  ]
+}

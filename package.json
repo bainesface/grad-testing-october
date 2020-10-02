@@ -1,0 +1,93 @@
+{
+  "name": "tdd-workshop",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@reach/router": "^1.3.4",
+    "@testing-library/user-event": "^12.1.6",
+    "aws-sdk": "^2.762.0",
+    "axios": "^0.20.0",
+    "change-case": "^4.1.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "json-server": "^0.16.1",
+    "marked": "^1.2.0",
+    "prismjs": "^1.21.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.3",
+    "validator": "^13.1.17"
+  },
+  "scripts": {
+    "export": "node cli.js export",
+    "start:api": "json-server --watch server/db.json --port 3001 --middlewares server/middleware.js",
+    "start:app": "react-scripts start",
+    "start": "npm-run-all --parallel start:api start:app",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+    "test:coverage": "npm run test -- --coverage --watchAll=false",
+    "test:ci": "CI=true npm run test -- --coverage --maxWorkers=2",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "lambda:update": "./src/app/stage-11/backend/start/lambda/update.sh",
+    "lambda:complete": "./src/app/stage-11/backend/completed/lambda/update.sh"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.0.4",
+    "commander": "^6.1.0",
+    "dotenv": "^8.2.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-jest": "^24.0.2",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.2",
+    "fs-extra": "^9.0.1",
+    "inquirer": "^7.3.3",
+    "nock": "^13.0.4",
+    "npm-run-all": "^4.1.5",
+    "ora": "^5.1.0",
+    "prettier": "^2.1.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!**/webpack.config.js",
+      "!<rootDir>/src/node_modules/",
+      "!<rootDir>/server/",
+      "!<rootDir>/src/*.js",
+      "!<rootDir>/src/component-library/**/**/index.js",
+      "!<rootDir>/src/app/_app/*.js",
+      "!<rootDir>/src/app/**/**/**/index.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/**/start/**": {
+        "branches": 0,
+        "functions": 0,
+        "lines": 0,
+        "statements": 0
+      },
+      "./src/app/_app/routes/**": {
+        "branches": 0,
+        "functions": 0,
+        "lines": 0,
+        "statements": 0
+      }
+    }
+  }
+}

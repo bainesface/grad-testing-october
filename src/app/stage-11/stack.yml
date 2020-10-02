@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'A template to create an API Gateway with a single endpoint that hits a Lambda'
+
+Parameters:
+  apiGatewayStageName:
+    Type: 'String'
+    AllowedPattern: '^[a-z0-9]+$'
+    Default: 'test'
+  lambdaName:
+    Type: 'String'
+    AllowedPattern: '^.{3,63}$'
+
+Resources:
+  apiGateway:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: 'my-api'
+      Description: 'My API'
+
+  apiGatewayMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: 'NONE'
+      HttpMethod: 'POST'
+      Integration:
+        IntegrationHttpMethod: 'POST'
+        Type: 'AWS_PROXY'
+        Uri: !Sub
+          - 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations'
+          - lambdaArn: !GetAtt 'lambdaFunction.Arn'
+      ResourceId: !Ref 'apiGatewayResource'
+      RestApiId: !Ref 'apiGateway'
+
+  apiGatewayResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId: !GetAtt 'apiGateway.RootResourceId'
+      PathPart: 'subscribe'
+      RestApiId: !Ref 'apiGateway'
+
+  lambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: 'Hello there!' }),
+            };
+          };
+      FunctionName: !Ref lambdaName
+      Handler: 'index.handler'
+      MemorySize: 128
+      Role: !GetAtt 'lambdaIAMRole.Arn'
+      Runtime: 'nodejs12.x'
+      Timeout: 10
+
+  lambdaApiGatewayInvoke:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !GetAtt 'lambdaFunction.Arn'
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${apiGateway}/*/POST/subscribe'
+
+  lambdaIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: 'Allow'
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+      Policies:
+        - PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - 'logs:CreateLogGroup'
+                Effect: 'Allow'
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+              - Action:
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Effect: 'Allow'
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaName}:*'
+              - Effect: 'Allow'
+                Action:
+                  - 'ses:SendEmail'
+                  - 'ses:SendRawEmail'
+                Resource:
+                  - '*'
+          PolicyName: 'lambda'
+
+  lambdaLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${lambdaName}'
+      RetentionInDays: 90
+
+Outputs:
+  apiGatewayInvokeURL:
+    Value: !Sub 'https://${apiGateway}.execute-api.${AWS::Region}.amazonaws.com/${apiGatewayStageName}'
+
+  lambdaArn:
+    Value: !GetAtt 'lambdaFunction.Arn'

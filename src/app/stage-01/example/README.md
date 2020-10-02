@@ -1,0 +1,1 @@
+We're going to build an application that will turn a sentence into sentence case with correct capitalisation and so on using a library called 'sentenceCase'. We will be validating the user input to ensure that the sentence has at least four words and contains at least 1 letter
