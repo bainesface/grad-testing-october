@@ -458,3 +458,8 @@ code {
 .markdown pre code {
   color: inherit;
 }
+
+.markdown .task-list-item {
+  list-style: none;
+  margin-left: calc(-1 * var(--spacing-double));
+}
