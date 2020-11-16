@@ -20,7 +20,7 @@ export const Counter = () => {
 
   return (
     <>
-      <p title="strokes">{counter}</p>
+      <p title="num-of-strokes">{counter}</p>
       {counter < 5 ? (
         <>
           <Button onClick={handleClick}>Pet me!</Button>
