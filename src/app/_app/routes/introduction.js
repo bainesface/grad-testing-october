@@ -1,4 +1,5 @@
 const courseIntroduction = require('../../../course-introduction/course-introduction.md');
+const knowledgeChecklist = require('../../../course-introduction/knowledge-checklist.md');
 const introductionReactTestingLibraryConcepts = require('../../../introduction-react-testing-library/concepts.md');
 const { MarkdownLoader } = require('../MarkdownLoader');
 const { Stage } = require('../Stage');
@@ -21,6 +22,12 @@ const introduction00 = {
       component: MarkdownLoader,
       path: 'course-introduction/introduction',
       markdownUrl: courseIntroduction,
+    },
+    {
+      name: 'Knowledge Checklist',
+      component: MarkdownLoader,
+      path: 'course-introduction/knowledge-checklist',
+      markdownUrl: knowledgeChecklist,
     },
   ],
 };

@@ -7,6 +7,17 @@ import 'prismjs/components/prism-jsx';
 import 'prismjs/components/prism-diff';
 import 'prismjs/components/prism-bash';
 
+marked.use({
+  renderer: {
+    listitem(text, task) {
+      if (task) {
+        return '<li class="task-list-item">' + text + '</li>\n';
+      }
+      return false;
+    },
+  },
+});
+
 export const MarkdownLoader = ({ markdownUrl }) => {
   const [markdown, setMarkdown] = useState('');
 
