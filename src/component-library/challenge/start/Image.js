@@ -1,3 +1,5 @@
-// import React from 'react'
+import React from 'react';
 
-export const Image = () => null;
+export const Image = ({ src, alt }) => {
+  return <img alt={alt} src={src} />;
+};

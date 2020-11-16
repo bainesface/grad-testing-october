@@ -1,3 +1,9 @@
-// import React from 'react';
+import React from 'react';
 
-export const Button = () => null;
+export const Button = ({ children, onClick, ...props }) => {
+  return (
+    <button onClick={onClick} {...props}>
+      {children}
+    </button>
+  );
+};
