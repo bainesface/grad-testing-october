@@ -1,11 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import nock from 'nock';
+import 'dotenv';
 
 import { SubscribeToPets } from './SubscribeToPets';
 
 const SUBSCRIBE_BUTTON_TEXT = 'Subscribe';
 const EMAIL_INPUT_LABEL_TEXT = 'Email:';
+
+nock.disableNetConnect();
 
 test('disables submit button until email is correct', async () => {
   render(<SubscribeToPets />);
@@ -29,6 +33,11 @@ test('disables submit button until email is correct', async () => {
 });
 
 test('renders the loading state when the form is submitted', async () => {
+  nock(process.env.REACT_APP_API_BASE_URL)
+    .defaultReplyHeaders({ 'ACCESS-CONTROL-ALLOW-ORIGIN': '*' })
+    .post('/subscribe')
+    .reply(201);
+
   render(<SubscribeToPets />);
   const submitButton = screen.queryByRole('button', {
     name: SUBSCRIBE_BUTTON_TEXT,
@@ -43,4 +52,6 @@ test('renders the loading state when the form is submitted', async () => {
   expect(submitButton).toHaveTextContent('Submitting…');
 
   // Instead of creating an additional test we can update this test by testing rendering the loading state followed by the success message when subscription is successful.
+
+  await screen.findByText('Subscription successful for johndoe@google.com');
 });

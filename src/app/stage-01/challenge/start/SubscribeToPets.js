@@ -1,24 +1,39 @@
 import React from 'react';
 import { Button } from 'component-library'; // you'll want to consume relevant components from the component library.
-
-// use this package to test for valid emails.
-// import isEmail from 'validator/lib/isEmail';
+import isEmail from 'validator/lib/isEmail';
 
 class SubscriptionForm extends React.Component {
-  // you'll want to store whether or not the email is valid in state
-  // state = {}
+  state = {
+    email: '',
+    // isValid: false,
+  };
 
-  // you'll want a function to handle input changes which updates the state
-  // handleChange = e => {};
+  handleChange = (e) => {
+    this.setState({ email: e.target.value });
+    // const isValidEmail = isEmail(this.state.email);
+    // if (isValidEmail) {
+    //   this.setState({ isValid: true });
+    // } else {
+    //   this.setState({ isValid: false });
+    // }
+  };
 
   render() {
+    const { email } = this.state;
+    const isValidEmail = isEmail(email);
+
     return (
       <form>
         <label>
           Email:
-          <input type="email" />
+          <input
+            htmlFor="submitButton"
+            value={email}
+            onChange={this.handleChange}
+            type="email"
+          />
         </label>
-        <Button disabled type="submit">
+        <Button id="submitButton" disabled={!isValidEmail} type="submit">
           Subscribe
         </Button>
       </form>

@@ -23,3 +23,13 @@ test('disables submit button until email is correct', async () => {
 
   expect(submitButton).not.toBeDisabled();
 });
+
+test('button text changes on click to reflect the pending task', async () => {
+  render(<SubscribeToPets />);
+
+  const submitButton = screen.queryByRole('button', { name: 'Subscribe' });
+  const emailInputElement = screen.queryByLabelText('Email:');
+  await userEvent.type(emailInputElement, 'johndoe@google.com');
+  userEvent.click(submitButton);
+  expect(submitButton).toHaveTextContent('Submitting');
+});

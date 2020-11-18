@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from './Button';
 import { Image } from './Image';
 import { Counter } from './Counter';
+import { Alert } from './Alert';
 
 export const App = () => (
   <div className="container">
@@ -17,6 +18,10 @@ export const App = () => (
     <div className="introduction-component">
       <h2>Counter Component</h2>
       <Counter />
+    </div>
+    <div className="introduction-component">
+      <h2>Alert Component</h2>
+      <Alert />
     </div>
   </div>
 );
