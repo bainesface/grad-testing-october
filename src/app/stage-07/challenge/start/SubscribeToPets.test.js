@@ -20,6 +20,17 @@ const SUBMISSION_PENDING_MESSAGE = 'Submitting…';
 const SUBSCRIBE_BUTTON_TEXT = 'Subscribe';
 const EMAIL_INPUT_LABEL_TEXT = 'Email:';
 
+// ## Acceptance criteria
+
+// - Display error and success messages with the Alert component from our component library
+// - Error messages should use the "error" variant
+// - Success messages should use the "success" variant
+
+// ## Hints
+
+// - success variant renders with the `alert--success` className
+// - error variant renders with the `alert--error` className
+
 test('disables submit button until email is correct', async () => {
   render(<SubscribeToPets />);
 
@@ -39,7 +50,7 @@ test('disables submit button until email is correct', async () => {
   expect(submitButton).not.toBeDisabled();
 });
 
-test('renders the loading state followed by the success message when subscription is successful', async () => {
+test('renders the loading state followed by the success alert when subscription is successful', async () => {
   const SUCCESS_MESSAGE = `Subscription successful for ${VALID_EMAIL}`;
   nock(REACT_APP_API_BASE_URL)
     .defaultReplyHeaders({ 'Access-Control-Allow-Origin': '*' })
@@ -49,8 +60,8 @@ test('renders the loading state followed by the success message when subscriptio
   render(<SubscribeToPets />);
 
   const submitButton = screen.queryByText(SUBSCRIBE_BUTTON_TEXT);
-
-  expect(screen.queryByText(SUCCESS_MESSAGE)).not.toBeInTheDocument();
+  const alert = screen.queryByText(SUCCESS_MESSAGE);
+  expect(alert).not.toBeInTheDocument();
 
   await userEvent.type(
     screen.queryByLabelText(EMAIL_INPUT_LABEL_TEXT),
@@ -59,9 +70,12 @@ test('renders the loading state followed by the success message when subscriptio
 
   userEvent.click(submitButton);
   expect(submitButton).toHaveTextContent('Submitting…');
-  expect(screen.queryByText(SUCCESS_MESSAGE)).not.toBeInTheDocument();
+  expect(alert).not.toBeInTheDocument();
 
-  await screen.findByText(SUCCESS_MESSAGE);
+  const successAlert = await screen.findByText(SUCCESS_MESSAGE);
+  expect(successAlert).toHaveClass(`alert alert--success`);
+  expect(successAlert).not.toHaveClass(`alert alert--info`);
+  expect(successAlert).not.toHaveClass(`alert alert--error`);
   expect(submitButton).not.toBeInTheDocument();
 });
 
@@ -87,7 +101,7 @@ test('submits correct request body', async () => {
   expect(requestBody).toEqual(data);
 });
 
-test('render error message when subscription fails', async () => {
+test('render error alert when subscription fails', async () => {
   nock(REACT_APP_API_BASE_URL)
     .defaultReplyHeaders({ 'Access-Control-Allow-Origin': '*' })
     .post(ENDPOINT)
@@ -103,11 +117,13 @@ test('render error message when subscription fails', async () => {
 
   userEvent.click(submitButton);
 
-  await screen.findByText(ERROR_MESSAGE);
-
+  const errorAlert = await screen.findByText(ERROR_MESSAGE);
+  expect(errorAlert).toHaveClass(`alert alert--error`);
   expect(screen.queryByText(SUCCESS_MESSAGE)).not.toBeInTheDocument();
   expect(screen.queryByText(SUBSCRIBE_BUTTON_TEXT)).not.toBeInTheDocument();
   expect(
     screen.queryByText(SUBMISSION_PENDING_MESSAGE)
   ).not.toBeInTheDocument();
 });
+
+// test('Display error and success messages with the Alert component from our component library')

@@ -1,6 +1,7 @@
 import React from 'react';
 import isEmail from 'validator/lib/isEmail';
 import { Button } from 'component-library';
+import { Alert } from '../../../../component-library/challenge/start/Alert';
 import axios from 'axios';
 
 const axiosInstance = axios.create({
@@ -46,12 +47,16 @@ class SubscriptionForm extends React.Component {
 
     if (submitError) {
       return (
-        <p>Sorry, we are unable to register your subscription at this time.</p>
+        <Alert type="error">
+          Sorry, we are unable to register your subscription at this time.
+        </Alert>
       );
     }
 
     if (submitSuccess) {
-      return <p>Subscription successful for {email}</p>;
+      return (
+        <Alert type="success">{`Subscription successful for ${email}`}</Alert>
+      );
     }
 
     return (
